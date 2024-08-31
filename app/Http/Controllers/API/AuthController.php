@@ -4,11 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GuardarUsuarioRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 
 
@@ -50,6 +53,36 @@ class AuthController extends Controller
                 'msg' => 'Error al almacenar el usuario: ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    public function login(LoginRequest $request)
+    {
+        // Verifica si las credenciales son válidas
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'status' => false,
+                'errors' => ['No autorizado']
+            ], 401);
+        }
+
+        // Obtén el usuario autenticado
+        $user = Auth::user();
+
+        // Genera un token de acceso personal
+        $token = $user->createToken('API TOKEN')->plainTextToken;
+
+        // Retorna la respuesta con el token
+        return response()->json([
+            'status' => true,
+            'message' => 'Usuario logueado correctamente',
+            'data' => [
+                'email' => $user->email,
+                'name' => $user->name,
+                'type' => $user->rol,
+            ],
+            'token' => $token
+        ], 200);
     }
 
     /**
