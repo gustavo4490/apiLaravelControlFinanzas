@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 
 
 
-
 class AuthController extends Controller
 {
     /*
@@ -87,12 +86,69 @@ class AuthController extends Controller
 
     public function logout()
     {
+        auth()->user()->tokens()->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Sesión cerrada correctamente'
+        ], 200);
+    }
 
-        return  'salir';
-        // auth()->user()->tokens()->delete();
-        // return response()->json([
-        //     'status' => true,
-        //     'message' => 'Sesión cerrada correctamente'
-        // ], 200);
+    /*
+    * eliminar un usuario por su correo electronico
+    */
+    /**
+     * Eliminar un usuario por su correo electrónico
+     *
+     * @param string $email
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteByEmail($email)
+    {
+        try {
+            // Validar que el email sea un formato válido
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Correo electrónico no válido'
+                ], 400);
+            }
+
+            // Obtener el rol del usuario autenticado
+            $userRol = auth()->user()->rol;
+
+            // Verificar si el usuario tiene permisos
+            if ($userRol !== 'daenerys_targaryen') {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Sin permisos para realizar esta acción'
+                ], 403);
+            }
+
+            // Buscar el usuario por su correo
+            $user = User::where('email', $email)->first();
+
+            // Verificar si el usuario existe
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Usuario no encontrado'
+                ], 404);
+            }
+
+            // Eliminar el usuario
+            $user->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Usuario eliminado con éxito'
+            ], 200);
+        } catch (\Exception $e) {
+            // Manejar cualquier excepción que pueda surgir
+            return response()->json([
+                'status' => false,
+                'message' => 'Error al eliminar el usuario',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
