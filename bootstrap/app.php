@@ -36,4 +36,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 'message' => 'No autenticado'
             ], 401);
         });
+
+        $exceptions->render(function (Throwable $e, Request $request) {
+            return response()->json([
+                'message' => 'Método no permitido o falta informacion en el request.'
+            ], 405);
+        });
     })->create();
