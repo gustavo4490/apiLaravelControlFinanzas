@@ -106,8 +106,33 @@ class CreditCards extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        // Validar que el ID sea numérico
+        if (!is_numeric($id)) {
+            return response()->json([
+                'error' => 'El ID de la tarjeta de crédito es requerido y debe ser un número válido.'
+            ], 400);
+        }
+
+        // Obtener el usuario autenticado
+        $user = auth()->user();
+
+        // Buscar la tarjeta de crédito que pertenece al usuario
+        $creditCard = CreditCard::where('id', $id)->where('idusuario', $user->id)->first();
+
+        // Validar si la tarjeta existe y pertenece al usuario
+        if (!$creditCard) {
+            return response()->json([
+                'error' => 'La tarjeta de crédito no existe o no pertenece al usuario autenticado.'
+            ], 404);
+        }
+
+        // Eliminar la tarjeta
+        $creditCard->delete();
+
+        return response()->json([
+            'message' => 'Tarjeta de crédito eliminada correctamente.'
+        ]);
     }
 }
