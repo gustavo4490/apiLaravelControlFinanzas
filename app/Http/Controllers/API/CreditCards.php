@@ -85,7 +85,28 @@ class CreditCards extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Validar que el ID de la tarjeta sea numérico
+        if (!is_numeric($id)) {
+            return response()->json([
+                'error' => 'El ID de la tarjeta de crédito es requerido y debe ser un número válido.'
+            ], 400);
+        }
+
+        // Encuentra la tarjeta de crédito asociada al usuario
+        try {
+            $creditCard = CreditCard::where('id', $id)
+                ->where('idusuario', auth()->id())
+                ->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'La tarjeta de crédito no existe o no pertenece al usuario autenticado.'
+            ], 404);
+        }
+
+        // Respuesta con los datos de la tarjeta de crédito
+        return response()->json([
+            'creditCard' => $creditCard,
+        ], 200);
     }
 
     /**
@@ -134,7 +155,6 @@ class CreditCards extends Controller
         // Respuesta con los datos actualizados
         return response()->json([
             'message' => 'Tarjeta actualizada con éxito.',
-            'creditCard' => $creditCard, // Opcional: Devuelve la tarjeta actualizada
         ], 200);
     }
 
