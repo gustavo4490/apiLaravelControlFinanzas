@@ -22,7 +22,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // solo el usuario administrador podra eliminar a otros usuarios
     Route::delete('v1/delete/user/{email}', [AuthController::class, 'deleteByEmail']);
-    
+
+    // Ruta adicional para PATCH
+    Route::patch('v1/creditCard/{id}', [CreditCards::class, 'updatePartial']);
     // registrar tarjetas de credito
     Route::resource('v1/creditCard', CreditCards::class);
 });

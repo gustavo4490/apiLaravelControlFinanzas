@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ActualizarTarjetaRequest;
 use App\Http\Requests\GuardarTarjetaRequest;
 use App\Models\CreditCard;
 use Illuminate\Http\Request;
@@ -101,6 +102,40 @@ class CreditCards extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+
+    public function updatePartial(ActualizarTarjetaRequest $request, $id)
+    {
+        // Validar que el ID de la tarjeta sea numérico
+        if (!is_numeric($id)) {
+            return response()->json([
+                'error' => 'El ID de la tarjeta de crédito es requerido y debe ser un número válido.'
+            ], 400);
+        }
+
+        // Obtén el usuario autenticado
+        $user = auth()->user();
+
+        // Encuentra la tarjeta de crédito asociada al usuario
+        $creditCard = CreditCard::where('id', $id)->where('idusuario', $user->id)->first();
+
+        if (!$creditCard) {
+            return response()->json([
+                'error' => 'La tarjeta de crédito no existe o no pertenece al usuario autenticado.'
+            ], 404);
+        }
+
+        // Valida los datos de la solicitud
+        $data = $request->validated();
+
+        // Actualiza solo los campos enviados en la solicitud
+        $creditCard->update($data);
+
+        // Respuesta con los datos actualizados
+        return response()->json([
+            'message' => 'Tarjeta actualizada con éxito.',
+            'creditCard' => $creditCard, // Opcional: Devuelve la tarjeta actualizada
+        ], 200);
     }
 
     /**
