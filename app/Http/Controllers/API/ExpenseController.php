@@ -92,4 +92,57 @@ class ExpenseController extends Controller
             return response()->json(['error' => 'Ocurrió un error al registrar el gasto: ' . $e->getMessage()], 500);
         }
     }
+
+    public function eliminarGasto(string $id)
+    {
+        // Validar que el ID de la tarjeta sea numérico
+        if (!is_numeric($id)) {
+            return response()->json([
+                'error' => 'El ID del gasto es requerido y debe ser un número válido.'
+            ], 400);
+        }
+
+        // Obtener el ID del usuario autenticado
+        $userId = auth()->user()->id;
+
+        DB::beginTransaction();
+
+        try {
+
+            // Obtener el gasto con el id proporcionado
+            $gasto = Expense::where('id', $id)->first();
+            $cantidadEliminar = $gasto->cantidad;
+
+            // Verificar si el gasto existe
+            if (!$gasto) {
+                return response()->json(['error' => 'Gasto no encontrado'], 404);
+            }
+
+            // Obtener el id de la tarjeta asociada al gasto
+            $idTarjetaAsociada = $gasto->id_tarjeta;
+
+            // Validar que la tarjeta pertenece al usuario autenticado
+            $tarjeta = CreditCard::where('id', $idTarjetaAsociada)->where('idusuario', $userId)->first();
+
+            // Si la tarjeta no pertenece al usuario o no existe, devolver un error
+            if (!$tarjeta) {
+                return response()->json(['error' => 'No tienes acceso a esta tarjeta'], 403);
+            }
+
+            $gasto->delete();
+            // restar el monto del gasto
+            $nuevoSaldo = $tarjeta->saldo - $cantidadEliminar;
+            $tarjeta->saldo = $nuevoSaldo;
+            $tarjeta->save();
+            
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Gasto eliminado correctamente y saldo actualizado.'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Ocurrió un error al eliminar el gasto: ' . $e->getMessage()], 500);
+        }
+    }
 }
