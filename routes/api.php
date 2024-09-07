@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CreditCards;
+use App\Http\Controllers\API\ExpenseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,4 +28,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::patch('v1/creditCard/{id}', [CreditCards::class, 'updatePartial']);
     // registrar tarjetas de credito
     Route::resource('v1/creditCard', CreditCards::class);
+    
+    // Ver el datalle de gasto de una tarjeta de credito
+    Route::get('v1/expenseCreditCard/{id}', [ExpenseController::class, 'detalleGastosPorTarjeta']);
+
+
 });

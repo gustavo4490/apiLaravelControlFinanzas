@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('credit_cards', function (Blueprint $table) {
+        Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->decimal('saldo', 10, 2);
-            $table->string('icono');
-            $table->unsignedBigInteger('idusuario');
+            $table->dateTime('fecha');
+            $table->string('empresa');
+            $table->decimal('cantidad', 10, 2);
+            $table->string('detalle');
+            $table->unsignedBigInteger('id_tarjeta');
             $table->timestamps();
+
             // Definir la clave foránea
-            $table->foreign('idusuario')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_tarjeta')->references('id')->on('credit_cards')->onDelete('cascade');
 
             // Agregar índice para optimizar consultas
-            $table->index('idusuario'); // Índice en la columna idusuario
+            $table->index('id_tarjeta'); // Índice en la columna id_tarjeta
         });
     }
 
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('credit_cards');
+        Schema::dropIfExists('expenses');
     }
 };

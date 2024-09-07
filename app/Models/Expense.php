@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CreditCard extends Model
+class Expense extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'saldo',
-        'icono',
-        'idusuario',
+        'fecha',
+        'empresa',
+        'cantidad',
+        'detalle',
+        'id_tarjeta',
     ];
 
     protected $hidden = [
         'created_at',
         'updated_at',
-        'idusuario',
     ];
 }
