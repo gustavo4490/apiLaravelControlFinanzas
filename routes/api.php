@@ -31,6 +31,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     // Ver el datalle de gasto de una tarjeta de credito
     Route::get('v1/expenseCreditCard/{id}', [ExpenseController::class, 'detalleGastosPorTarjeta']);
+    Route::post('v1/expenseCreditCard/{id}', [ExpenseController::class, 'registrarGasto']);
+
 
 
 });
