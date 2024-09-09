@@ -28,12 +28,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::patch('v1/creditCard/{id}', [CreditCards::class, 'updatePartial']);
     // registrar tarjetas de credito
     Route::resource('v1/creditCard', CreditCards::class);
-    
+
     // Ver el datalle de gasto de una tarjeta de credito
     Route::get('v1/expenseCreditCard/{id}', [ExpenseController::class, 'detalleGastosPorTarjeta']);
     Route::post('v1/expenseCreditCard/{id}', [ExpenseController::class, 'registrarGasto']);
     Route::delete('v1/expenseCreditCard/{id}', [ExpenseController::class, 'eliminarGasto']);
-
-
-
+    Route::patch('v1/expenseCreditCard/{id}', [ExpenseController::class, 'actualizarGasto']);
 });
