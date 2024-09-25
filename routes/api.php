@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CreditCards;
 use App\Http\Controllers\API\ExpenseController;
+use App\Http\Controllers\API\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('v1/expenseCreditCard/{id}', [ExpenseController::class, 'registrarGasto']);
     Route::delete('v1/expenseCreditCard/{id}', [ExpenseController::class, 'eliminarGasto']);
     Route::patch('v1/expenseCreditCard/{id}', [ExpenseController::class, 'actualizarGasto']);
+
+    // pagos tarjeta de credito 
+    Route::post('v1/paymentCreditCard/{id}', [PaymentController::class, 'registrarPago']);
+
 });
