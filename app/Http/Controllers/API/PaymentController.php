@@ -43,6 +43,11 @@ class PaymentController extends Controller
             Payment::create($validated);
 
             $nuevoSaldo = $tarjeta->saldo - $validated['cantidad'];
+            if ($nuevoSaldo < 0) {
+                return response()->json([
+                    'message' => 'No puedes abonar más del saldo disponible en la tarjeta.'
+                ], 400);
+            }
             $tarjeta->saldo = $nuevoSaldo;
             $tarjeta->save();
 
