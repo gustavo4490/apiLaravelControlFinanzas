@@ -18,7 +18,10 @@ Route::post('v1/auth/login', [AuthController::class, 'login']);
 
 // Rutas protegidas
 
-Route::middleware(['auth:sanctum'])->group(function () {
+// Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
+
+
     // cerrar sesion
     Route::post('v1/auth/logout', [AuthController::class, 'logout']);
 
@@ -39,5 +42,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // pagos tarjeta de credito 
     Route::post('v1/paymentCreditCard/{id}', [PaymentController::class, 'registrarPago']);
     Route::delete('v1/paymentCreditCard/{id}', [PaymentController::class, 'eliminarGasto']);
-
 });
