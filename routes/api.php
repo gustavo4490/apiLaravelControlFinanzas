@@ -38,5 +38,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // pagos tarjeta de credito 
     Route::post('v1/paymentCreditCard/{id}', [PaymentController::class, 'registrarPago']);
+    Route::delete('v1/paymentCreditCard/{id}', [PaymentController::class, 'eliminarGasto']);
 
 });

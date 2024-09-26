@@ -65,4 +65,59 @@ class PaymentController extends Controller
             return response()->json(['error' => 'Ocurrió un error al registrar el gasto: ' . $e->getMessage()], 500);
         }
     }
+
+    public function eliminarGasto(string $id)
+    {
+
+        // Validar que el ID de la tarjeta sea numérico
+        if (!is_numeric($id)) {
+            return response()->json([
+                'error' => 'El ID del gasto es requerido y debe ser un número válido.'
+            ], 400);
+        }
+
+        // Obtener el ID del usuario autenticado
+        $userId = auth()->user()->id;
+
+        DB::beginTransaction();
+
+        try {
+
+            // Obtener el pago con el id proporcionado
+            $pago = Payment::where('id', $id)->first();
+
+            // Verificar si el pago existe
+            if (!$pago) {
+                return response()->json(['error' => 'Pago no encontrado'], 404);
+            }
+
+            $cantidadEliminar = $pago->cantidad;
+
+            // Obtener el id de la tarjeta asociada al gasto
+            $idTarjetaAsociada = $pago->id_tarjeta;
+
+            // Validar que la tarjeta pertenece al usuario autenticado
+            $tarjeta = CreditCard::where('id', $idTarjetaAsociada)->where('idusuario', $userId)->first();
+
+            // Si la tarjeta no pertenece al usuario o no existe, devolver un error
+            if (!$tarjeta) {
+                return response()->json(['error' => 'No tienes acceso a esta tarjeta'], 403);
+            }
+
+            $pago->delete();
+            // restar el monto del pago
+            $nuevoSaldo = $tarjeta->saldo + $cantidadEliminar;
+            $tarjeta->saldo = $nuevoSaldo;
+            $tarjeta->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Pago eliminado correctamente y saldo actualizado.'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Ocurrió un error al eliminar el pago: ' . $e->getMessage()], 500);
+        }
+    }
 }
