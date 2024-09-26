@@ -93,9 +93,7 @@ class AuthController extends Controller
         ], 200);
     }
 
-    /*
-    * eliminar un usuario por su correo electronico
-    */
+   
     /**
      * Eliminar un usuario por su correo electrónico
      *

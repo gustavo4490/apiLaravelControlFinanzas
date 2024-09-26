@@ -41,5 +41,6 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
 
     // pagos tarjeta de credito 
     Route::post('v1/paymentCreditCard/{id}', [PaymentController::class, 'registrarPago']);
-    Route::delete('v1/paymentCreditCard/{id}', [PaymentController::class, 'eliminarGasto']);
+    Route::delete('v1/paymentCreditCard/{id}', [PaymentController::class, 'eliminarPago']);
+    Route::patch('v1/paymentCreditCard/{id}', [PaymentController::class, 'actualizarPago']);
 });
