@@ -16,7 +16,7 @@ Route::post('v1/auth/login', [AuthController::class, 'login']);
 
 
 
-// Rutas protegidas
+// Rutas protegidas por autenticacion
 
 // Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
