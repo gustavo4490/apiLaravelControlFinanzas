@@ -61,7 +61,7 @@ class AuthController extends Controller
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'status' => false,
-                'errors' => ['No autorizado']
+                'errors' => ['Credenciales incorrectas. Por favor, verifica tu correo y contraseña.']
             ], 401);
         }
 
