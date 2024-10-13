@@ -25,11 +25,15 @@ class CreditCards extends Controller
             // Verificar si se encontraron tarjetas de crédito
             if ($tarjetas->isEmpty()) {
                 return response()->json([
-                    'message' => 'No se encontraron tarjetas de crédito para este usuario.'
+                    'message' => 'No se encontraron tarjetas de crédito para este usuario.',
+                    'numero' => 0
                 ], 404);
             }
 
-            return response()->json($tarjetas, 200);
+            return response()->json([
+                'tarjetas' => $tarjetas,
+                'numero' => 1
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al intentar obtener las tarjetas de crédito.',
