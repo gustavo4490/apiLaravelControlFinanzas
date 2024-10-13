@@ -20,7 +20,10 @@ class CreditCards extends Controller
             $userId = auth()->user()->id;
 
             // Obtener las tarjetas de crédito del usuario autenticado
-            $tarjetas = CreditCard::where('idusuario', $userId)->get();
+            // $tarjetas = CreditCard::where('idusuario', $userId)->get();
+            $tarjetas = CreditCard::where('idusuario', $userId)
+            ->orderBy('id', 'desc') // Cambia 'id' por el campo que desees usar para el orden
+            ->get();
 
             // Verificar si se encontraron tarjetas de crédito
             if ($tarjetas->isEmpty()) {
