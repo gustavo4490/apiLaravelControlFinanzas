@@ -13,16 +13,23 @@ class CreditCards extends Controller
     /*
      * obtener todas las tarjetas que tenga el usuario autenticado
      */
-    public function index()
+    public function index(string $tipo)
     {
         try {
+            if (is_null($tipo)) {
+                return response()->json([
+                    'message' => 'El parámetro tipo es requerido.',
+                    'numero' => 0
+                ], 200);
+            }
             // Obtener el ID del usuario autenticado
             $userId = auth()->user()->id;
 
             // Obtener las tarjetas de crédito del usuario autenticado
-            // $tarjetas = CreditCard::where('idusuario', $userId)->get();
+
             $tarjetas = CreditCard::where('idusuario', $userId)
-                ->orderBy('id', 'desc') // Cambia 'id' por el campo que desees usar para el orden
+                ->where('tipo', $tipo)
+                ->orderBy('id', 'desc')
                 ->get();
 
             // Verificar si se encontraron tarjetas de crédito
@@ -30,7 +37,7 @@ class CreditCards extends Controller
                 return response()->json([
                     'message' => 'No se encontraron tarjetas de crédito para este usuario.',
                     'numero' => 0
-                ], 200); 
+                ], 200);
             }
 
             return response()->json([

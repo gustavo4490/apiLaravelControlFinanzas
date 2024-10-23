@@ -27,6 +27,7 @@ class GuardarTarjetaRequest extends FormRequest
             'name' => 'required|string|max:75',
             'saldo' => 'sometimes|numeric', // 'sometimes' para que no sea obligatorio
             'icono' => 'required|string|max:75',
+            'tipo' => 'sometimes|string|max:75',
         ];
     }
 
@@ -42,6 +43,10 @@ class GuardarTarjetaRequest extends FormRequest
             'icono.required' => 'El ícono de la tarjeta es obligatorio.',
             'icono.string' => 'El ícono debe ser una cadena de texto.',
             'icono.max' => 'El ícono no debe exceder los 75 caracteres.',
+            
+            'tipo.required' => 'El tipo es obligatorio.',
+            'tipo.string' => 'El tipo debe ser una cadena de texto.',
+            'tipo.max' => 'El tipo no debe exceder los 75 caracteres.',
         ];
     }
 

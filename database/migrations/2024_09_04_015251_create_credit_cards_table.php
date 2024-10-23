@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('saldo', 10, 2);
             $table->string('icono');
             $table->unsignedBigInteger('idusuario');
+            $table->string('tipo');
             $table->timestamps();
             // Definir la clave foránea
             $table->foreign('idusuario')->references('id')->on('users')->onDelete('cascade');

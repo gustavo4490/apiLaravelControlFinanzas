@@ -14,6 +14,7 @@ class CreditCard extends Model
         'saldo',
         'icono',
         'idusuario',
+        'tipo',
     ];
 
     protected $hidden = [

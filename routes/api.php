@@ -30,8 +30,10 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
 
     // Ruta adicional para PATCH
     Route::patch('v1/creditCard/{id}', [CreditCards::class, 'updatePartial']);
-    // registrar tarjetas de credito
+    // mostrar todas las tarjetas de credito o carteras en base el tipo
+    Route::get('v1/creditCard/{tipo}', [CreditCards::class, 'index']);
     Route::resource('v1/creditCard', CreditCards::class);
+
 
     // Ver el datalle de gasto de una tarjeta de credito
     Route::get('v1/expenseCreditCard/{id}', [ExpenseController::class, 'detalleGastosPorTarjeta']);
