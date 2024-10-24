@@ -74,7 +74,12 @@ class ExpenseController extends Controller
             // Crea un nuevo gasto
             $gasto = Expense::create($validated);
 
-            $nuevoSaldo = $tarjeta->saldo + $validated['cantidad']; // Sumar el monto del gasto
+            if($tarjeta->tipo == 'billeteraEfectivo'){
+                $nuevoSaldo = $tarjeta->saldo - $validated['cantidad']; // Restar el monto del gasto
+            }
+            else {
+                $nuevoSaldo = $tarjeta->saldo + $validated['cantidad']; // Sumar el monto del gasto
+            }
             $tarjeta->saldo = $nuevoSaldo;
             $tarjeta->save();
 

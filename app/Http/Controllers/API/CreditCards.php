@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ActualizarTarjetaRequest;
 use App\Http\Requests\GuardarTarjetaRequest;
 use App\Models\CreditCard;
+use App\Models\Expense;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class CreditCards extends Controller
@@ -203,5 +205,38 @@ class CreditCards extends Controller
         return response()->json([
             'message' => 'Tarjeta de crédito eliminada correctamente.'
         ]);
+    }
+
+    public function obtenerDetalleGastoYPago($id)
+    {
+        // Validar que el ID sea numérico
+        if (!is_numeric($id)) {
+            return response()->json([
+                'error' => 'El ID de la tarjeta de crédito es requerido y debe ser un número válido.'
+            ], 400);
+        }
+
+        // Obtener el usuario autenticado
+        $user = auth()->user();
+
+        // Buscar la tarjeta de crédito que pertenece al usuario
+        $creditCard = CreditCard::where('id', $id)->where('idusuario', $user->id)->first();
+
+        // Validar si la tarjeta existe y pertenece al usuario
+        if (!$creditCard) {
+            return response()->json([
+                'error' => 'La tarjeta de crédito no existe o no pertenece al usuario autenticado.'
+            ], 200);
+        }
+
+        $gastos = Expense::where('id_tarjeta', $id)->get();
+        $pagos = Payment::where('id_tarjeta', $id)->get();
+        
+        return response()->json([
+            'gastos' => $gastos,
+            'pagos' => $pagos,
+        ], 200);
+
+
     }
 }
