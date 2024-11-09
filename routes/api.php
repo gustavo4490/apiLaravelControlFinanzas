@@ -41,11 +41,11 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Ver el datalle de gasto de una tarjeta de credito
     Route::get('v1/expenseCreditCard/{id}', [ExpenseController::class, 'detalleGastosPorTarjeta']);
     Route::post('v1/expenseCreditCard/{id}', [ExpenseController::class, 'registrarGasto']);
-    Route::delete('v1/expenseCreditCard/{id}', [ExpenseController::class, 'eliminarGasto']);
+    Route::delete('v1/expenseCreditCard/{id}/{tipo}', [ExpenseController::class, 'eliminarGasto']);
     Route::patch('v1/expenseCreditCard/{id}', [ExpenseController::class, 'actualizarGasto']);
 
     // pagos tarjeta de credito 
     Route::post('v1/paymentCreditCard/{id}', [PaymentController::class, 'registrarPago']);
-    Route::delete('v1/paymentCreditCard/{id}', [PaymentController::class, 'eliminarPago']);
+    Route::delete('v1/paymentCreditCard/{id}/{tipo}', [PaymentController::class, 'eliminarPago']);
     Route::patch('v1/paymentCreditCard/{id}', [PaymentController::class, 'actualizarPago']);
 });

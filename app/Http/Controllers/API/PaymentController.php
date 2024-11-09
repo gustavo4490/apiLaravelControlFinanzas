@@ -73,7 +73,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function eliminarPago(string $id)
+    public function eliminarPago(string $id, string $tipo)
     {
 
         // Validar que el ID de la tarjeta sea numérico
@@ -112,8 +112,13 @@ class PaymentController extends Controller
             }
 
             $pago->delete();
+
+            if ($tipo == 'billeteraEfectivo') {
+                $nuevoSaldo = $tarjeta->saldo - $cantidadEliminar;
+            } else if ($tipo == 'tarjetaCredito') {
+                $nuevoSaldo = $tarjeta->saldo + $cantidadEliminar;
+            }
             // restar el monto del pago
-            $nuevoSaldo = $tarjeta->saldo + $cantidadEliminar;
             $tarjeta->saldo = $nuevoSaldo;
             $tarjeta->save();
 

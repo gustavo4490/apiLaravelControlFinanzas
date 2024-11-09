@@ -74,10 +74,9 @@ class ExpenseController extends Controller
             // Crea un nuevo gasto
             $gasto = Expense::create($validated);
 
-            if($tarjeta->tipo == 'billeteraEfectivo'){
+            if ($tarjeta->tipo == 'billeteraEfectivo') {
                 $nuevoSaldo = $tarjeta->saldo - $validated['cantidad']; // Restar el monto del gasto
-            }
-            else {
+            } else {
                 $nuevoSaldo = $tarjeta->saldo + $validated['cantidad']; // Sumar el monto del gasto
             }
             $tarjeta->saldo = $nuevoSaldo;
@@ -99,7 +98,7 @@ class ExpenseController extends Controller
         }
     }
 
-    public function eliminarGasto(string $id)
+    public function eliminarGasto(string $id,  string $tipo)
     {
         // Validar que el ID de la tarjeta sea numérico
         if (!is_numeric($id)) {
@@ -135,9 +134,15 @@ class ExpenseController extends Controller
                 return response()->json(['error' => 'No tienes acceso a esta tarjeta'], 403);
             }
 
+            if ($tipo == 'billeteraEfectivo') {
+                // sumar el monto del gasto
+                $nuevoSaldo = $tarjeta->saldo + $cantidadEliminar;
+            } else if ($tipo == 'tarjetaCredito') {
+                // restar el monto del gasto
+                $nuevoSaldo = $tarjeta->saldo - $cantidadEliminar;
+            }
+
             $gasto->delete();
-            // restar el monto del gasto
-            $nuevoSaldo = $tarjeta->saldo - $cantidadEliminar;
             $tarjeta->saldo = $nuevoSaldo;
             $tarjeta->save();
 
