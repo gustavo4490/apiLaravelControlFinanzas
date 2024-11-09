@@ -157,7 +157,7 @@ class ExpenseController extends Controller
         }
     }
 
-    public function actualizarGasto(ActualizarGastoRequest $request, $id)
+    public function actualizarGasto(ActualizarGastoRequest $request, $id, string $tipo)
     {
 
         // Validar que el ID de la tarjeta sea numérico
@@ -201,16 +201,30 @@ class ExpenseController extends Controller
 
             if (!is_null($nuevaCantidad) && $nuevaCantidad != $cantidadOriginal) {
 
-                // Si la nueva cantidad es mayor que la cantidad original, restamos la diferencia al saldo
-                if ($nuevaCantidad > $cantidadOriginal) {
-                    $diferencia = $nuevaCantidad - $cantidadOriginal;
-                    $tarjeta->saldo += $diferencia;
-                }
+                if ($tipo == 'billeteraEfectivo') {
+                    // Si la nueva cantidad es mayor que la cantidad original, restamos la diferencia al saldo
+                    if ($nuevaCantidad > $cantidadOriginal) {
+                        $diferencia = $nuevaCantidad - $cantidadOriginal;
+                        $tarjeta->saldo -= $diferencia;
+                    }
 
-                // Si la nueva cantidad es menor que la cantidad original, sumamos la diferencia al saldo
-                else if ($nuevaCantidad < $cantidadOriginal) {
-                    $diferencia = $cantidadOriginal - $nuevaCantidad;
-                    $tarjeta->saldo -= $diferencia;
+                    // Si la nueva cantidad es menor que la cantidad original, sumamos la diferencia al saldo
+                    else if ($nuevaCantidad < $cantidadOriginal) {
+                        $diferencia = $cantidadOriginal - $nuevaCantidad;
+                        $tarjeta->saldo += $diferencia;
+                    }
+                } else if ($tipo == 'tarjetaCredito') {
+                    // Si la nueva cantidad es mayor que la cantidad original, restamos la diferencia al saldo
+                    if ($nuevaCantidad > $cantidadOriginal) {
+                        $diferencia = $nuevaCantidad - $cantidadOriginal;
+                        $tarjeta->saldo += $diferencia;
+                    }
+
+                    // Si la nueva cantidad es menor que la cantidad original, sumamos la diferencia al saldo
+                    else if ($nuevaCantidad < $cantidadOriginal) {
+                        $diferencia = $cantidadOriginal - $nuevaCantidad;
+                        $tarjeta->saldo -= $diferencia;
+                    }
                 }
 
                 // Guardar los cambios en la tarjeta
