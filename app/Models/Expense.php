@@ -21,4 +21,11 @@ class Expense extends Model
         'created_at',
         'updated_at',
     ];
+
+    // Accesor para formatear la cantidad
+    public function getFormattedCantidadAttribute()
+    {
+        return number_format($this->cantidad, 2, '.', ',');
+    }
+
 }

@@ -29,4 +29,10 @@ class Payment extends Model
     {
         return $this->belongsTo(CreditCard::class, 'id_tarjeta');
     }
+
+    public function getFormattedCantidadAttribute()
+    {
+        return number_format($this->cantidad, 2, '.', ',');
+    }
+    
 }

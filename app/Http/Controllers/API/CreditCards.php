@@ -28,7 +28,6 @@ class CreditCards extends Controller
             $userId = auth()->user()->id;
 
             // Obtener las tarjetas de crédito del usuario autenticado
-
             $tarjetas = CreditCard::where('idusuario', $userId)
                 ->where('tipo', $tipo)
                 ->orderBy('id', 'desc')
@@ -41,6 +40,11 @@ class CreditCards extends Controller
                     'numero' => 0
                 ], 200);
             }
+
+            // Formatear el saldo de cada tarjeta
+            $tarjetas->each(function ($tarjeta) {
+                $tarjeta->saldo = number_format($tarjeta->saldo, 2, '.', ',');
+            });
 
             return response()->json([
                 'tarjetas' => $tarjetas,
@@ -229,14 +233,21 @@ class CreditCards extends Controller
             ], 200);
         }
 
-        $gastos = Expense::where('id_tarjeta', $id)->get();
-        $pagos = Payment::where('id_tarjeta', $id)->get();
-        
+        // $gastos = Expense::where('id_tarjeta', $id)->get();
+        $gastos = Expense::where('id_tarjeta', $id)->get()->map(function ($gasto) {
+            $gasto->cantidad = $gasto->formatted_cantidad;
+            return $gasto;
+        });
+
+        // $pagos = Payment::where('id_tarjeta', $id)->get();
+        $pagos = Payment::where('id_tarjeta', $id)->get()->map(function ($pago) {
+            $pago->cantidad = $pago->formatted_cantidad;
+            return $pago;
+        });
+
         return response()->json([
             'gastos' => $gastos,
             'pagos' => $pagos,
         ], 200);
-
-
     }
 }
